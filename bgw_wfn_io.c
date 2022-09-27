@@ -28,6 +28,7 @@ void setup_mf_header(hid_t file){
 		create_group(file, "/mf_header/kpoints");
 		create_group(file, "/mf_header/gspace");
 		create_group(file, "/mf_header/symmetry");
+		create_group(file, "/mf_header/crystal");
 	}
 }
 
