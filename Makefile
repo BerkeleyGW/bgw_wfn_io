@@ -3,17 +3,23 @@
 HDF5DIR = $(HDF5_DIR)
 
 LINK = mpicc
-#LDFLAGS = -L$(HDF5DIR)/lib -lhdf5
 CC = mpicc
-LDFLAGS = -shared -L$(TACC_HDF5_LIB) -lhdf5 -lhdf5_hl
-CFLAGS = --warn-all -fPIC -I$(TACC_HDF5_INC)
 
-all: lib bgw_wfn_io.o
+LDFLAGS = -L$(TACC_HDF5_LIB) -lhdf5 -lhdf5_hl -g3 -Wall -fvisibility=default -fstack-protector-all -fstack-check
+CFLAGS = -fPIC -I$(TACC_HDF5_INC) -g3 -Wall -fvisibility=default -fstack-protector-all -fstack-check
 
+all: lib test
 lib: bgw_wfn_io.so
+test: test_bindings.x
 
 bgw_wfn_io.so: bgw_wfn_io.o
-	$(CC) -o $@ $< $(LDFLAGS)
+	$(CC) -shared -o $@ $^ $(LDFLAGS)
+
+test_bindings.x: test_bindings.o bgw_wfn_io.o
+	$(CC) -o $@ $^ $(LDFLAGS)
+
+test_bindings.o: test_bindings.c bgw_wfn_io.h
+	$(CC) $(CFLAGS) -c -o $@ $<
 
 bgw_wfn_io.o: bgw_wfn_io.c bgw_wfn_io.h
 	$(CC) $(CFLAGS) -c -o $@ $<
@@ -21,4 +27,4 @@ bgw_wfn_io.o: bgw_wfn_io.c bgw_wfn_io.h
 clean:
 	rm -f *.x *.o
 
-.PHONY: clean lib all
+.PHONY: clean all lib test

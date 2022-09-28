@@ -39,54 +39,116 @@ void setup_wfns(hid_t file){
 	}
 }
 
+
 /*
  * Routines to write mf_header
  */
 
-void write_mf_header_kpoints(hid_t file, struct kpoints_t kp){
-	H5LTmake_dataset_int(file, "/mf_header/kpoints/nspin", 0, (hsize_t[]){0}, &kp.nspin);
-	H5LTmake_dataset_int(file, "/mf_header/kpoints/nspinor", 0, (hsize_t[]){0}, &kp.nspinor);
-	H5LTmake_dataset_int(file, "/mf_header/kpoints/nrk", 0, (hsize_t[]){0}, &kp.nrk);
-	H5LTmake_dataset_int(file, "/mf_header/kpoints/mnband", 0, (hsize_t[]){0}, &kp.mnband);
-	H5LTmake_dataset_int(file, "/mf_header/kpoints/ngkmax", 0, (hsize_t[]){0}, &kp.ngkmax);
-	H5LTmake_dataset_double(file, "/mf_header/kpoints/ecutwfc", 0, (hsize_t[]){0}, &kp.ecutwfc);
-	H5LTmake_dataset_int(file, "/mf_header/kpoints/kgrid", 1, (hsize_t[]){3}, &kp.kgrid[0]);
-	H5LTmake_dataset_double(file, "/mf_header/kpoints/shift", 1, (hsize_t[]){3}, &kp.shift[0]);
-	H5LTmake_dataset_int(file, "/mf_header/kpoints/ngk", 1, (hsize_t[]){kp.nrk}, kp.ngk);
-	H5LTmake_dataset_int(file, "/mf_header/kpoints/ifmin", 2, (hsize_t[]){kp.nspin,kp.nrk}, kp.ifmin);
-	H5LTmake_dataset_int(file, "/mf_header/kpoints/ifmax", 2, (hsize_t[]){kp.nspin,kp.nrk}, kp.ifmax);
-	H5LTmake_dataset_double(file, "/mf_header/kpoints/w", 1, (hsize_t[]){kp.nrk}, kp.w);
-	H5LTmake_dataset_double(file, "/mf_header/kpoints/rk", 2, (hsize_t[]){kp.nrk,3}, kp.rk);
-	H5LTmake_dataset_double(file, "/mf_header/kpoints/el", 3, (hsize_t[]){kp.nspin,kp.nrk,kp.mnband}, kp.el);
-	H5LTmake_dataset_double(file, "/mf_header/kpoints/occ", 3, (hsize_t[]){kp.nspin,kp.nrk,kp.mnband}, kp.occ);
+void write_mf_header_kpoints(hid_t file, struct kpoints_t *kp){
+	H5LTmake_dataset_int(file, "/mf_header/kpoints/nspin", 0, (hsize_t[]){0}, &kp->nspin);
+	H5LTmake_dataset_int(file, "/mf_header/kpoints/nspinor", 0, (hsize_t[]){0}, &kp->nspinor);
+	H5LTmake_dataset_int(file, "/mf_header/kpoints/nrk", 0, (hsize_t[]){0}, &kp->nrk);
+	H5LTmake_dataset_int(file, "/mf_header/kpoints/mnband", 0, (hsize_t[]){0}, &kp->mnband);
+	H5LTmake_dataset_int(file, "/mf_header/kpoints/ngkmax", 0, (hsize_t[]){0}, &kp->ngkmax);
+	H5LTmake_dataset_double(file, "/mf_header/kpoints/ecutwfc", 0, (hsize_t[]){0}, &kp->ecutwfc);
+	H5LTmake_dataset_int(file, "/mf_header/kpoints/kgrid", 1, (hsize_t[]){3}, &kp->kgrid[0]);
+	H5LTmake_dataset_double(file, "/mf_header/kpoints/shift", 1, (hsize_t[]){3}, &kp->shift[0]);
+	H5LTmake_dataset_int(file, "/mf_header/kpoints/ngk", 1, (hsize_t[]){kp->nrk}, &kp->ngk[0]);
+	H5LTmake_dataset_int(file, "/mf_header/kpoints/ifmin", 2, (hsize_t[]){kp->nspin,kp->nrk}, &kp->ifmin[0]);
+	H5LTmake_dataset_int(file, "/mf_header/kpoints/ifmax", 2, (hsize_t[]){kp->nspin,kp->nrk}, &kp->ifmax[0]);
+	H5LTmake_dataset_double(file, "/mf_header/kpoints/w", 1, (hsize_t[]){kp->nrk}, &kp->w[0]);
+	H5LTmake_dataset_double(file, "/mf_header/kpoints/rk", 2, (hsize_t[]){kp->nrk,3}, &kp->rk[0]);
+	H5LTmake_dataset_double(file, "/mf_header/kpoints/el", 3, (hsize_t[]){kp->nspin,kp->nrk,kp->mnband}, &kp->el[0]);
+	H5LTmake_dataset_double(file, "/mf_header/kpoints/occ", 3, (hsize_t[]){kp->nspin,kp->nrk,kp->mnband}, &kp->occ[0]);
 }
 
-void write_mf_header_gspace(hid_t file, struct gspace_t gvec){
-	H5LTmake_dataset_int(file, "/mf_header/gspace/ng", 0, (hsize_t[]){0}, &gvec.ng);
-	H5LTmake_dataset_double(file, "/mf_header/gspace/ecutrho", 0, (hsize_t[]){0}, &gvec.ecutrho);
-	H5LTmake_dataset_int(file, "/mf_header/gspace/FFTgrid", 1, (hsize_t[]){3}, &gvec.FFTgrid[0]);
-	H5LTmake_dataset_int(file, "/mf_header/gspace/components", 2, (hsize_t[]){gvec.ng,3}, gvec.components);
+void write_mf_header_gspace(hid_t file, struct gspace_t *gvec){
+	H5LTmake_dataset_int(file, "/mf_header/gspace/ng", 0, (hsize_t[]){0}, &gvec->ng);
+	H5LTmake_dataset_double(file, "/mf_header/gspace/ecutrho", 0, (hsize_t[]){0}, &gvec->ecutrho);
+	H5LTmake_dataset_int(file, "/mf_header/gspace/FFTgrid", 1, (hsize_t[]){3}, &gvec->FFTgrid[0]);
+	H5LTmake_dataset_int(file, "/mf_header/gspace/components", 2, (hsize_t[]){gvec->ng,3}, &gvec->components[0]);
 }
 
-void write_mf_header_symmetry(hid_t file, struct symmetry_t syms){
-	H5LTmake_dataset_int(file, "/mf_header/symmetry/ntran", 0, (hsize_t[]){0}, &syms.ntran);
-	H5LTmake_dataset_int(file, "/mf_header/symmetry/cell_symmetry", 0, (hsize_t[]){0}, &syms.cell_symmetry);
-	H5LTmake_dataset_int(file, "/mf_header/symmetry/mtrx", 3, (hsize_t[]){48,3,3}, &syms.mtrx[0][0][0]);
-	H5LTmake_dataset_double(file, "/mf_header/symmetry/tnp", 2, (hsize_t[]){48,3}, &syms.tnp[0][0]);
+void write_mf_header_symmetry(hid_t file, struct symmetry_t *syms){
+	H5LTmake_dataset_int(file, "/mf_header/symmetry/ntran", 0, (hsize_t[]){0}, &syms->ntran);
+	H5LTmake_dataset_int(file, "/mf_header/symmetry/cell_symmetry", 0, (hsize_t[]){0}, &syms->cell_symmetry);
+	H5LTmake_dataset_int(file, "/mf_header/symmetry/mtrx", 3, (hsize_t[]){48,3,3}, &syms->mtrx[0][0][0]);
+	H5LTmake_dataset_double(file, "/mf_header/symmetry/tnp", 2, (hsize_t[]){48,3}, &syms->tnp[0][0]);
 }
 
-void write_mf_header_crystal(hid_t file, struct crystal_t crys){
-	H5LTmake_dataset_double(file, "/mf_header/crystal/celvol", 0, (hsize_t[]){0}, &crys.celvol);
-	H5LTmake_dataset_double(file, "/mf_header/crystal/recvol", 0, (hsize_t[]){0}, &crys.recvol);
-	H5LTmake_dataset_double(file, "/mf_header/crystal/alat", 0, (hsize_t[]){0}, &crys.alat);
-	H5LTmake_dataset_double(file, "/mf_header/crystal/blat", 0, (hsize_t[]){0}, &crys.blat);
-	H5LTmake_dataset_int(file, "/mf_header/crystal/nat", 0, (hsize_t[]){0}, &crys.nat);
-	H5LTmake_dataset_double(file, "/mf_header/crystal/avec", 2, (hsize_t[]){3,3}, &crys.avec[0][0]);
-	H5LTmake_dataset_double(file, "/mf_header/crystal/bvec", 2, (hsize_t[]){3,3}, &crys.bvec[0][0]);
-	H5LTmake_dataset_double(file, "/mf_header/crystal/adot", 2, (hsize_t[]){3,3}, &crys.adot[0][0]);
-	H5LTmake_dataset_double(file, "/mf_header/crystal/bdot", 2, (hsize_t[]){3,3}, &crys.bdot[0][0]);
-	H5LTmake_dataset_int(file, "/mf_header/crystal/atyp", 1, (hsize_t[]){crys.nat}, crys.atyp);
-	H5LTmake_dataset_double(file, "/mf_header/crystal/apos", 2, (hsize_t[]){crys.nat,3}, crys.apos);
+void write_mf_header_crystal(hid_t file, struct crystal_t *crys){
+	H5LTmake_dataset_double(file, "/mf_header/crystal/celvol", 0, (hsize_t[]){0}, &crys->celvol);
+	H5LTmake_dataset_double(file, "/mf_header/crystal/recvol", 0, (hsize_t[]){0}, &crys->recvol);
+	H5LTmake_dataset_double(file, "/mf_header/crystal/alat", 0, (hsize_t[]){0}, &crys->alat);
+	H5LTmake_dataset_double(file, "/mf_header/crystal/blat", 0, (hsize_t[]){0}, &crys->blat);
+	H5LTmake_dataset_int(file, "/mf_header/crystal/nat", 0, (hsize_t[]){0}, &crys->nat);
+	H5LTmake_dataset_double(file, "/mf_header/crystal/avec", 2, (hsize_t[]){3,3}, &crys->avec[0][0]);
+	H5LTmake_dataset_double(file, "/mf_header/crystal/bvec", 2, (hsize_t[]){3,3}, &crys->bvec[0][0]);
+	H5LTmake_dataset_double(file, "/mf_header/crystal/adot", 2, (hsize_t[]){3,3}, &crys->adot[0][0]);
+	H5LTmake_dataset_double(file, "/mf_header/crystal/bdot", 2, (hsize_t[]){3,3}, &crys->bdot[0][0]);
+	H5LTmake_dataset_int(file, "/mf_header/crystal/atyp", 1, (hsize_t[]){crys->nat}, &crys->atyp[0]);
+	H5LTmake_dataset_double(file, "/mf_header/crystal/apos", 2, (hsize_t[]){crys->nat,3}, &crys->apos[0]);
+}
+
+
+/*
+ * Routines to read mf_header
+ */
+
+void read_mf_header_kpoints(hid_t file, struct kpoints_t *kp){
+	H5LTread_dataset_int(file, "/mf_header/kpoints/nspin", &kp->nspin);
+	H5LTread_dataset_int(file, "/mf_header/kpoints/nspinor", &kp->nspinor);
+	H5LTread_dataset_int(file, "/mf_header/kpoints/nrk", &kp->nrk);
+	H5LTread_dataset_int(file, "/mf_header/kpoints/mnband", &kp->mnband);
+	H5LTread_dataset_int(file, "/mf_header/kpoints/ngkmax", &kp->ngkmax);
+	H5LTread_dataset_double(file, "/mf_header/kpoints/ecutwfc", &kp->ecutwfc);
+	H5LTread_dataset_int(file, "/mf_header/kpoints/kgrid", &kp->kgrid[0]);
+	H5LTread_dataset_double(file, "/mf_header/kpoints/shift", &kp->shift[0]);
+	kp->ngk = malloc(kp->nrk*sizeof(i32_t));
+	H5LTread_dataset_int(file, "/mf_header/kpoints/ngk", &kp->ngk[0]);
+	kp->ifmin = malloc(kp->nspin*kp->nrk*sizeof(i32_t));
+	H5LTread_dataset_int(file, "/mf_header/kpoints/ifmin", &kp->ifmin[0]);
+	kp->ifmax = malloc(kp->nspin*kp->nrk*sizeof(i32_t));
+	H5LTread_dataset_int(file, "/mf_header/kpoints/ifmax", &kp->ifmax[0]);
+	kp->w = malloc(kp->nrk*sizeof(f64_t));
+	H5LTread_dataset_double(file, "/mf_header/kpoints/w", &kp->w[0]);
+	kp->rk = malloc(kp->nrk*3*sizeof(f64_t));
+	H5LTread_dataset_double(file, "/mf_header/kpoints/rk", &kp->rk[0]);
+	kp->el = malloc(kp->nspin*kp->nrk*kp->mnband*sizeof(f64_t));
+	H5LTread_dataset_double(file, "/mf_header/kpoints/el", &kp->el[0]);
+	kp->occ = malloc(kp->nspin*kp->nrk*kp->mnband*sizeof(f64_t));
+	H5LTread_dataset_double(file, "/mf_header/kpoints/occ", &kp->occ[0]);
+}
+
+void read_mf_header_gspace(hid_t file, struct gspace_t *gvec){
+	H5LTread_dataset_int(file, "/mf_header/gspace/ng", &gvec->ng);
+	H5LTread_dataset_double(file, "/mf_header/gspace/ecutrho", &gvec->ecutrho);
+	H5LTread_dataset_int(file, "/mf_header/gspace/FFTgrid", &gvec->FFTgrid[0]);
+	gvec->components = malloc(gvec->ng*3*sizeof(i32_t));
+	H5LTread_dataset_int(file, "/mf_header/gspace/components", &gvec->components[0]);
+}
+
+void read_mf_header_symmetry(hid_t file, struct symmetry_t *syms){
+	H5LTread_dataset_int(file, "/mf_header/symmetry/ntran", &syms->ntran);
+	H5LTread_dataset_int(file, "/mf_header/symmetry/cell_symmetry", &syms->cell_symmetry);
+	H5LTread_dataset_int(file, "/mf_header/symmetry/mtrx", &syms->mtrx[0][0][0]);
+	H5LTread_dataset_double(file, "/mf_header/symmetry/tnp", &syms->tnp[0][0]);
+}
+
+void read_mf_header_crystal(hid_t file, struct crystal_t *crys){
+	H5LTread_dataset_double(file, "/mf_header/crystal/celvol", &crys->celvol);
+	H5LTread_dataset_double(file, "/mf_header/crystal/recvol", &crys->recvol);
+	H5LTread_dataset_double(file, "/mf_header/crystal/alat", &crys->alat);
+	H5LTread_dataset_double(file, "/mf_header/crystal/blat", &crys->blat);
+	H5LTread_dataset_int(file, "/mf_header/crystal/nat", &crys->nat);
+	H5LTread_dataset_double(file, "/mf_header/crystal/avec", &crys->avec[0][0]);
+	H5LTread_dataset_double(file, "/mf_header/crystal/bvec", &crys->bvec[0][0]);
+	H5LTread_dataset_double(file, "/mf_header/crystal/adot", &crys->adot[0][0]);
+	H5LTread_dataset_double(file, "/mf_header/crystal/bdot", &crys->bdot[0][0]);
+	crys->atyp = malloc(crys->nat*sizeof(i32_t));
+	H5LTread_dataset_int(file, "/mf_header/crystal/atyp", &crys->atyp[0]);
+	crys->apos = malloc(crys->nat*3*sizeof(f64_t));
+	H5LTread_dataset_double(file, "/mf_header/crystal/apos", &crys->apos[0]);
 }
 
 /*
@@ -95,16 +157,30 @@ void write_mf_header_crystal(hid_t file, struct crystal_t crys){
 
 void bgw_io_setup_wfn(const char *fname){
 	hid_t file;
-    	file = H5Fcreate(fname, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
+	file = H5Fcreate(fname, H5F_ACC_TRUNC, H5P_DEFAULT, H5P_DEFAULT);
 	setup_mf_header(file);
 	H5Fclose(file);
 }
 
-void bgw_io_write_mf_header(const char *fname, struct mf_header_t mf_header){
+void bgw_io_write_mf_header(const char *fname, struct mf_header_t *mf){
 	hid_t file;
 
-    	file = H5Fopen(fname, H5F_ACC_RDWR, H5P_DEFAULT);
+	file = H5Fopen(fname, H5F_ACC_RDWR, H5P_DEFAULT);
 	setup_mf_header(file);
-	write_mf_header_gspace(file, mf_header.gspace);
+	write_mf_header_kpoints(file, &mf->kpoints);
+	write_mf_header_gspace(file, &mf->gspace);
+	write_mf_header_symmetry(file, &mf->symmetry);
+	write_mf_header_crystal(file, &mf->crystal);
+	H5Fclose(file);
+}
+
+void bgw_io_read_mf_header(const char *fname, struct mf_header_t *mf){
+	hid_t file;
+
+	file = H5Fopen(fname, H5F_ACC_RDONLY, H5P_DEFAULT);
+	read_mf_header_kpoints(file, &mf->kpoints);
+	read_mf_header_gspace(file, &mf->gspace);
+	read_mf_header_symmetry(file, &mf->symmetry);
+	read_mf_header_crystal(file, &mf->crystal);
 	H5Fclose(file);
 }

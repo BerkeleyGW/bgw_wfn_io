@@ -62,5 +62,4 @@ class MF_HEADER(Structure):
         ('gspace_t', GSPACE),
         ('symmetry_t', SYMMETRY),
         ('crystal_t', CRYSTAL),
-        
     ]

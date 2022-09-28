@@ -12,9 +12,15 @@ groups_abbrev = {
 }
 
 
-types_to_c = {
+types_to_hdf5 = {
     'integer': 'int',
     'double': 'double'
+}
+
+
+types_to_bgw = {
+    'integer': 'i32_t',
+    'double': 'f64_t'
 }
 
 
@@ -28,7 +34,7 @@ def populate_kws(root, kws):
         populate_kws(child, kws)
 
 
-def bgw_h5_spec_to_c(fname_spec, group_name):
+def create_write_cmd(fname_spec, group_name):
     root = parse_h5_spec(fname_spec)
 
     mf_header = root.get_child('mf_header')
@@ -41,37 +47,87 @@ def bgw_h5_spec_to_c(fname_spec, group_name):
     for child in group.children:
         if child.get_type() == 'dataset':
             name = child.keywords['Dataset']
-            dt = types_to_c[child.keywords['Type']]
+            dtype = child.keywords['Type']
+            dt_hdf5 = types_to_hdf5[dtype]
             path = '/'.join(child.get_full_path())
             rank = int(child.keywords['Rank'])
 
-            use_ampersand = True
+            fixed_size = True
             dims = []
             for idim in range(rank):
                 dim = child.keywords[f'Dims({idim+1})']
                 if not dim.isdecimal():
-                    use_ampersand = False
-                    dim = f'{kws[dim]}.{dim}'
+                    fixed_size = False
+                    dim = f'{kws[dim]}->{dim}'
                 dims.append(dim)
             # Fortran to C order
             dims = dims[::-1]
 
             if rank==0:
-                dims = '{0}'
+                dims_str = '{0}'
             else:
-                dims = '{' + ','.join(dims) + '}'
+                dims_str = '{' + ','.join(dims) + '}'
 
-            var = f'{groups_abbrev[group_name]}.{name}'
-            if use_ampersand:
-                var = f'&{var}'
-                if rank > 0:
-                    var = var + '[0]'*rank
-            else:
-                var = f'{var}'
+            var = f'{groups_abbrev[group_name]}->{name}'
+            # If the size of the array is fixed, it is a (nested) static array
+            # Otherwise we just dynamically allocate a 1D array.
+            rank_allocated = rank if fixed_size else 1
+            var = f'&{var}'
+            if rank > 0:
+                var = var + '[0]'*rank_allocated
 
-            lines += [f'\tH5LTmake_dataset_{dt}(file, "/{path}", {rank}, (hsize_t[]){dims}, {var});']
+            lines += [f'\tH5LTmake_dataset_{dt_hdf5}(file, "/{path}", {rank}, (hsize_t[]){dims_str}, {var});']
 
-    return lines
+    return '\n'.join(lines)
+
+
+def create_read_cmd(fname_spec, group_name):
+    root = parse_h5_spec(fname_spec)
+
+    mf_header = root.get_child('mf_header')
+    group = mf_header.get_child(group_name)
+
+    kws = {}
+    populate_kws(root, kws)
+
+    lines = []
+    for child in group.children:
+        if child.get_type() == 'dataset':
+            name = child.keywords['Dataset']
+            dtype = child.keywords['Type']
+            dt_hdf5 = types_to_hdf5[dtype]
+            path = '/'.join(child.get_full_path())
+            rank = int(child.keywords['Rank'])
+
+            fixed_size = True
+            dims = []
+            for idim in range(rank):
+                dim = child.keywords[f'Dims({idim+1})']
+                if not dim.isdecimal():
+                    fixed_size = False
+                    dim = f'{kws[dim]}->{dim}'
+                dims.append(dim)
+            # Fortran to C order
+            dims = dims[::-1]
+
+            var = f'{groups_abbrev[group_name]}->{name}'
+            if not fixed_size:
+                # Size of the array is variable, it is a pointer
+                # Need to dynamically allocate variable
+                dt_header = types_to_bgw[dtype]
+                dims2 = dims + [f'sizeof({dt_header})']
+                lines += [f'\t{var} = malloc({"*".join(dims2)});']
+
+            # If the size of the array is fixed, it is a (nested) static array
+            # Otherwise we just dynamically allocate a 1D array.
+            rank_allocated = rank if fixed_size else 1
+            var = f'&{var}'
+            if rank > 0:
+                var = var + '[0]'*rank_allocated
+
+            lines += [f'\tH5LTread_dataset_{dt_hdf5}(file, "/{path}", {var});']
+
+    return '\n'.join(lines)
 
 
 if __name__ == "__main__":
@@ -81,5 +137,4 @@ if __name__ == "__main__":
     parser.add_argument('group_name', choices=groups_abbrev.keys())
     args = parser.parse_args()
 
-    lines = main(**vars(args))
-    print('\n'.join(lines))
+    #lines = main(**vars(args))

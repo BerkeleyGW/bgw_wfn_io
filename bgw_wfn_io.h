@@ -72,9 +72,10 @@ extern "C" {
 #endif
 
 void bgw_io_setup_wfn(const char *fname);
-void bgw_io_write_mf_header(const char *fname, struct mf_header_t mf_header);
-void bgw_io_write_mf_gvecs(const char *fname, struct mf_header_t);
-void bgw_io_write_mf_coeffs(const char *fname, struct mf_header_t);
+void bgw_io_read_mf_header(const char *fname, struct mf_header_t *mf);
+void bgw_io_write_mf_header(const char *fname, struct mf_header_t *mf);
+//void bgw_io_write_mf_gvecs(const char *fname, struct mf_header_t *mf);
+//void bgw_io_write_mf_coeffs(const char *fname, struct mf_header_t *mf);
 
 #ifdef __cplusplus
 }
