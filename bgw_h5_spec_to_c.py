@@ -116,7 +116,7 @@ def create_read_cmd(fname_spec, group_name):
                 # Need to dynamically allocate variable
                 dt_header = types_to_bgw[dtype]
                 dims2 = dims + [f'sizeof({dt_header})']
-                lines += [f'\t{var} = malloc({"*".join(dims2)});']
+                lines += [f'\t{var} = ({dt_header}*) malloc({"*".join(dims2)});']
 
             # If the size of the array is fixed, it is a (nested) static array
             # Otherwise we just dynamically allocate a 1D array.

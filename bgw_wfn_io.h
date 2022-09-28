@@ -3,12 +3,13 @@
 #ifndef BGW_WFN_IO_H
 #define BGW_WFN_IO_H
 
-#include "stdint.h"
+#include <stdint.h>
 
 /*
  Copyright (C) 2022 Felipe H. da Jornada
 */
 
+#define BGW_WFN_VERSION 1
 
 typedef int32_t i32_t;
 typedef double f64_t;
@@ -61,6 +62,8 @@ struct crystal_t {
 };
 
 struct mf_header_t {
+	i32_t versionnumber;
+	i32_t flavor;
 	struct kpoints_t kpoints;
 	struct gspace_t gspace;
 	struct symmetry_t symmetry;
