@@ -89,11 +89,6 @@ ${create_read_cmd('wfn.h5.spec', 'crystal')}
  */
 
 
-void bgw_io_print_mf_header(struct mf_header_t *mf){
-${create_print_cmd('wfn.h5.spec')}
-}
-
-
 void bgw_io_setup_wfn(const char *fname){
 	hid_t file;
 
