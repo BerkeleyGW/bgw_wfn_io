@@ -159,6 +159,87 @@ void read_mf_header_crystal(hid_t file, struct crystal_t *crys){
  */
 
 
+void bgw_io_print_mf_header(struct mf_header_t *mf){
+	printf("\n");
+	printf("- Group kpoints:\n");
+	printf("  - nspin (%d): ", sizeof(mf->kpoints.nspin)/sizeof(i32_t));
+	printf("%d\n", mf->kpoints.nspin);
+	printf("  - nspinor (%d): ", sizeof(mf->kpoints.nspinor)/sizeof(i32_t));
+	printf("%d\n", mf->kpoints.nspinor);
+	printf("  - nrk (%d): ", sizeof(mf->kpoints.nrk)/sizeof(i32_t));
+	printf("%d\n", mf->kpoints.nrk);
+	printf("  - mnband (%d): ", sizeof(mf->kpoints.mnband)/sizeof(i32_t));
+	printf("%d\n", mf->kpoints.mnband);
+	printf("  - ngkmax (%d): ", sizeof(mf->kpoints.ngkmax)/sizeof(i32_t));
+	printf("%d\n", mf->kpoints.ngkmax);
+	printf("  - ecutwfc (%d): ", sizeof(mf->kpoints.ecutwfc)/sizeof(f64_t));
+	printf("%f\n", mf->kpoints.ecutwfc);
+	printf("  - kgrid (%d): ", sizeof(mf->kpoints.kgrid)/sizeof(i32_t));
+	printf("...\n");
+	printf("  - shift (%d): ", sizeof(mf->kpoints.shift)/sizeof(f64_t));
+	printf("...\n");
+	printf("  - ngk (%d): ", sizeof(mf->kpoints.ngk)/sizeof(i32_t));
+	printf("...\n");
+	printf("  - ifmin (%d): ", sizeof(mf->kpoints.ifmin)/sizeof(i32_t));
+	printf("...\n");
+	printf("  - ifmax (%d): ", sizeof(mf->kpoints.ifmax)/sizeof(i32_t));
+	printf("...\n");
+	printf("  - w (%d): ", sizeof(mf->kpoints.w)/sizeof(f64_t));
+	printf("...\n");
+	printf("  - rk (%d): ", sizeof(mf->kpoints.rk)/sizeof(f64_t));
+	printf("...\n");
+	printf("  - el (%d): ", sizeof(mf->kpoints.el)/sizeof(f64_t));
+	printf("...\n");
+	printf("  - occ (%d): ", sizeof(mf->kpoints.occ)/sizeof(f64_t));
+	printf("...\n");
+	printf("\n");
+	printf("- Group gspace:\n");
+	printf("  - ng (%d): ", sizeof(mf->gspace.ng)/sizeof(i32_t));
+	printf("%d\n", mf->gspace.ng);
+	printf("  - ecutrho (%d): ", sizeof(mf->gspace.ecutrho)/sizeof(f64_t));
+	printf("%f\n", mf->gspace.ecutrho);
+	printf("  - FFTgrid (%d): ", sizeof(mf->gspace.FFTgrid)/sizeof(i32_t));
+	printf("...\n");
+	printf("  - components (%d): ", sizeof(mf->gspace.components)/sizeof(i32_t));
+	printf("...\n");
+	printf("\n");
+	printf("- Group symmetry:\n");
+	printf("  - ntran (%d): ", sizeof(mf->symmetry.ntran)/sizeof(i32_t));
+	printf("%d\n", mf->symmetry.ntran);
+	printf("  - cell_symmetry (%d): ", sizeof(mf->symmetry.cell_symmetry)/sizeof(i32_t));
+	printf("%d\n", mf->symmetry.cell_symmetry);
+	printf("  - mtrx (%d): ", sizeof(mf->symmetry.mtrx)/sizeof(i32_t));
+	printf("...\n");
+	printf("  - tnp (%d): ", sizeof(mf->symmetry.tnp)/sizeof(f64_t));
+	printf("...\n");
+	printf("\n");
+	printf("- Group crystal:\n");
+	printf("  - celvol (%d): ", sizeof(mf->crystal.celvol)/sizeof(f64_t));
+	printf("%f\n", mf->crystal.celvol);
+	printf("  - recvol (%d): ", sizeof(mf->crystal.recvol)/sizeof(f64_t));
+	printf("%f\n", mf->crystal.recvol);
+	printf("  - alat (%d): ", sizeof(mf->crystal.alat)/sizeof(f64_t));
+	printf("%f\n", mf->crystal.alat);
+	printf("  - blat (%d): ", sizeof(mf->crystal.blat)/sizeof(f64_t));
+	printf("%f\n", mf->crystal.blat);
+	printf("  - nat (%d): ", sizeof(mf->crystal.nat)/sizeof(i32_t));
+	printf("%d\n", mf->crystal.nat);
+	printf("  - avec (%d): ", sizeof(mf->crystal.avec)/sizeof(f64_t));
+	printf("...\n");
+	printf("  - bvec (%d): ", sizeof(mf->crystal.bvec)/sizeof(f64_t));
+	printf("...\n");
+	printf("  - adot (%d): ", sizeof(mf->crystal.adot)/sizeof(f64_t));
+	printf("...\n");
+	printf("  - bdot (%d): ", sizeof(mf->crystal.bdot)/sizeof(f64_t));
+	printf("...\n");
+	printf("  - atyp (%d): ", sizeof(mf->crystal.atyp)/sizeof(i32_t));
+	printf("...\n");
+	printf("  - apos (%d): ", sizeof(mf->crystal.apos)/sizeof(f64_t));
+	printf("...\n");
+	printf("\n");
+}
+
+
 void bgw_io_setup_wfn(const char *fname){
 	hid_t file;
 

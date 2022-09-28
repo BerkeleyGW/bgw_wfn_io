@@ -64,7 +64,6 @@ class Node(object):
                 '  '*self.level, self.level, len(self.children), len(self.keywords))
         return s
 
-
     def __str__(self):
         if len(self.children):
             s = '{}<node level={} len(children)={} len(keywords)={}>\n'.format(
@@ -75,6 +74,11 @@ class Node(object):
         else:
             s = repr(self) + '\n'
         return s
+
+    def __iter__(self):
+        yield self
+        for child in self.children:
+            yield from child
 
 
 def parse_h5_spec(inp_fname):

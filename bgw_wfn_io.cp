@@ -1,5 +1,5 @@
 /* -*- indent-tabs-mode: t -*- */
-<%from bgw_h5_spec_to_c import create_write_cmd, create_read_cmd%>
+<%from bgw_h5_spec_to_c import create_write_cmd, create_read_cmd, create_print_cmd%>
 
 #include <complex.h>
 #include <stdio.h>
@@ -87,6 +87,11 @@ ${create_read_cmd('wfn.h5.spec', 'crystal')}
 /*
  * Functions called by user
  */
+
+
+void bgw_io_print_mf_header(struct mf_header_t *mf){
+${create_print_cmd('wfn.h5.spec')}
+}
 
 
 void bgw_io_setup_wfn(const char *fname){
