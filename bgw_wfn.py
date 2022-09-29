@@ -1,65 +1,70 @@
 
 from ctypes import Structure, c_int32, c_double, POINTER
 
+i32_t = c_int32
+f64_t = c_double
+
 
 class KPOINTS(Structure):
     _fields_ = [
-        ('nspin', c_int32),
-	('nspinor', c_int32),
-	('nrk', c_int32),
-	('mnband', c_int32),
-	('ngkmax', c_int32),
-	('ecutwfc', c_double),
-	('kgrid', c_int32*3),
-	('shift', c_int32*3),
-	('ngk', POINTER(c_int32)),
-	('ifmin', POINTER(c_int32)),
-	('ifmax', POINTER(c_int32)),
-        ('w', POINTER(c_double)),
-        ('rk', POINTER(c_double)),
-        ('el', POINTER(c_double)),
-        ('occ', POINTER(c_double))
+        ('nspin', i32_t),
+	('nspinor', i32_t),
+	('nrk', i32_t),
+	('mnband', i32_t),
+	('ngkmax', i32_t),
+	('ecutwfc', f64_t),
+	('kgrid', i32_t*3),
+	('shift', f64_t*3),
+	('ngk', POINTER(i32_t)),
+	('ifmin', POINTER(i32_t)),
+	('ifmax', POINTER(i32_t)),
+        ('w', POINTER(f64_t)),
+        ('rk', POINTER(f64_t)),
+        ('el', POINTER(f64_t)),
+        ('occ', POINTER(f64_t))
     ]
 
 
 class GSPACE(Structure):
     _fields_ = [
-        ('ng', c_int32),
-        ('ecutrho', c_double),
-        ('FFTgrid', c_int32*3),
-        ('components', POINTER(c_int32))
+        ('ng', i32_t),
+        ('ecutrho', f64_t),
+        ('FFTgrid', i32_t*3),
+        ('components', POINTER(i32_t))
     ]
 
 
 class SYMMETRY(Structure):
     _fields_ = [
-        ('ntran', c_int32),
-        ('cell_symmetry', c_int32),
-        ('mtrx', c_int32*48*3*3),
-        ('tnp', c_double*48*3)
+        ('ntran', i32_t),
+        ('cell_symmetry', i32_t),
+        ('mtrx', i32_t*48*3*3),
+        ('tnp', f64_t*48*3)
     ]
 
 
 class CRYSTAL(Structure):
     _fields_ = [
-        ('celvol', c_double),
-        ('recvol', c_double),
-        ('alat', c_double),
-        ('blat', c_double),
-        ('avec', c_double*9),
-        ('bvec', c_double*9),
-        ('adot', c_double*9),
-        ('bdot', c_double*9),
-        ('nat', c_int32),
-        ('atyp', POINTER(c_int32)),
-        ('apos', POINTER(c_double))
+        ('celvol', f64_t),
+        ('recvol', f64_t),
+        ('alat', f64_t),
+        ('blat', f64_t),
+        ('avec', f64_t*9),
+        ('bvec', f64_t*9),
+        ('adot', f64_t*9),
+        ('bdot', f64_t*9),
+        ('nat', i32_t),
+        ('atyp', POINTER(i32_t)),
+        ('apos', POINTER(f64_t))
     ]
 
 
 class MF_HEADER(Structure):
     _fields_ = [
-        ('kpoints_t', KPOINTS),
-        ('gspace_t', GSPACE),
-        ('symmetry_t', SYMMETRY),
-        ('crystal_t', CRYSTAL),
+        ('versionnumber', i32_t),
+        ('flavor', i32_t),
+        ('kpoints', KPOINTS),
+        ('gspace', GSPACE),
+        ('symmetry', SYMMETRY),
+        ('crystal', CRYSTAL),
     ]
