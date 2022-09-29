@@ -37,6 +37,8 @@ int main(int argc, char *argv[]) {
 
 	//bgw_io_print_mf_header(&mf);
 
+	bgw_io_free_mf_header(&mf);
+
 	printf("All done!\n");
 
 	return 0;

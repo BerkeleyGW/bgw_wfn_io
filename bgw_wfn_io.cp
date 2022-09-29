@@ -1,5 +1,5 @@
 /* -*- indent-tabs-mode: t -*- */
-<%from wfn_spec_to_c import create_write_cmd, create_read_cmd, create_print_cmd%>
+<%from wfn_spec_to_c import create_write_cmd, create_read_cmd, create_free_cmd, create_print_cmd%>
 
 #include <complex.h>
 #include <stdio.h>
@@ -111,6 +111,18 @@ ${create_read_cmd('wfn.h5.spec', 'crystal')}
 /*
  * Functions called by user
  */
+
+
+/** Free mf_header structure after use by bgw_io_read_mf_header
+ *
+ *  @param mf Mean-field structure
+ */
+void bgw_io_free_mf_header(struct mf_header_t *mf) {
+${create_free_cmd('wfn.h5.spec', 'kpoints')}
+${create_free_cmd('wfn.h5.spec', 'gspace')}
+##${create_free_cmd('wfn.h5.spec', 'symmetry')}
+${create_free_cmd('wfn.h5.spec', 'crystal')}
+}
 
 
 /** Setups the internal structure for an output wavefunction file.

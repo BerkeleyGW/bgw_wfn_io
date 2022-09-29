@@ -5,8 +5,8 @@ HDF5DIR = $(HDF5_DIR)
 LINK = mpicc
 CC = mpicc
 
-LDFLAGS = -L$(TACC_HDF5_LIB) -lhdf5 -lhdf5_hl -g3 -Wall -fvisibility=default -fstack-protector-all -fstack-check
-CFLAGS = -fPIC -I$(TACC_HDF5_INC) -g3 -Wall -fvisibility=default -fstack-protector-all -fstack-check
+LDFLAGS = -L$(TACC_HDF5_LIB) -lhdf5 -lhdf5_hl -ggdb3 -Wall -fvisibility=default -fstack-protector-all -fstack-check
+CFLAGS = -fPIC -I$(TACC_HDF5_INC) -ggdb3 -Wall -fvisibility=default -fstack-protector-all -fstack-check
 
 all: lib test
 lib: bgw_wfn_io.so

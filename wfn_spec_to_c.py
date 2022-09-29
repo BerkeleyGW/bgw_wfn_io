@@ -97,6 +97,11 @@ def _create_io_cmd(fname_spec, group_name, io):
                     lines += [f'\t{var} = ({dt_header}*) malloc({"*".join(dims2)});']
                 lines += [f'\tH5LTread_dataset_{dt_hdf5}(file, "/{path}", {var_hdf5});']
 
+            elif io=='free':
+                if not fixed_size:
+                    # Free array that was dynamically allocated
+                    lines += [f'\tfree(mf->{group_name}.{name});']
+
             else:
                 raise ValueError(f'{io=}')
 
@@ -109,6 +114,9 @@ def create_read_cmd(fname_spec, group_name):
 
 def create_write_cmd(fname_spec, group_name):
     return _create_io_cmd(fname_spec, group_name, 'write')
+
+def create_free_cmd(fname_spec, group_name):
+    return _create_io_cmd(fname_spec, group_name, 'free')
 
 
 def create_print_cmd(fname_spec):

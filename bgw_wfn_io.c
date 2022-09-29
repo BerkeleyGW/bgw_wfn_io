@@ -183,6 +183,24 @@ void read_mf_header_crystal(hid_t file, struct crystal_t *crys){
  */
 
 
+/** Free mf_header structure after use by bgw_io_read_mf_header
+ *
+ *  @param mf Mean-field structure
+ */
+void bgw_io_free_mf_header(struct mf_header_t *mf) {
+	free(mf->kpoints.ngk);
+	free(mf->kpoints.ifmin);
+	free(mf->kpoints.ifmax);
+	free(mf->kpoints.w);
+	free(mf->kpoints.rk);
+	free(mf->kpoints.el);
+	free(mf->kpoints.occ);
+	free(mf->gspace.components);
+	free(mf->crystal.atyp);
+	free(mf->crystal.apos);
+}
+
+
 /** Setups the internal structure for an output wavefunction file.
  *
  *  @param fname Wavefunction file name (hdf5)
