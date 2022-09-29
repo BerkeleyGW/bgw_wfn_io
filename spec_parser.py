@@ -1,9 +1,11 @@
 
 from collections import OrderedDict
+from functools import cached_property
 import re
 
 
 re_kw = re.compile(r'([^ ]*?): \s*(.*)')
+
 
 class Node(object):
     def __init__(self, parent=None):
@@ -14,26 +16,26 @@ class Node(object):
         if self.parent is None:
             self.level = 0
         else:
-            self.parent.get_type() in ('root', 'group')
+            self.parent.type in ('root', 'group')
             self.parent.children.append(self)
             self.level = self.parent.level + 1
 
-    def get_type(self):
+    @cached_property
+    def type(self):
         if self.level==0:
             return 'root'
         if 'Group' in self.keywords.keys():
             return 'group'
         if 'Dataset' in self.keywords.keys():
             return 'dataset'
-        print(self.keywords)
         raise Exception('Invalid node type: {}'.format(str(self)))
 
     def get_child(self, name):
         for child in self.children:
-            if child.get_type() == 'group':
+            if child.type == 'group':
                 if child.keywords['Group'] == name:
                     return child
-            if child.get_type() == 'Dataset':
+            if child.type == 'Dataset':
                 if child.keywords['Dataset'] == name:
                     return child
         return None
@@ -51,7 +53,7 @@ class Node(object):
         path = []
         node = self
         while node.level > 0:
-            if node.get_type()=='dataset':
+            if node.type=='dataset':
                 s = node.keywords['Dataset']
             else:
                 s = node.keywords['Group']
@@ -79,6 +81,27 @@ class Node(object):
         yield self
         for child in self.children:
             yield from child
+
+    @cached_property
+    def name(self):
+        if self.type == 'root':
+            return ''
+        elif self.type == 'group':
+            return self.keywords['Group']
+        elif self.type == 'dataset':
+            return self.keywords['Dataset']
+
+    @cached_property
+    def dtype(self):
+        return self.keywords['Type']
+
+    @cached_property
+    def rank(self):
+        return int(self.keywords['Rank'])
+
+    @cached_property
+    def dims(self):
+        return [self.keywords[f'Dims({i+1})'] for i in range(self.rank)]
 
 
 def parse_h5_spec(inp_fname):

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 
-from bgw_h5_spec_parser import parse_h5_spec
+from spec_parser import parse_h5_spec
 
 
 groups_abbrev = {
@@ -32,11 +32,10 @@ types_to_fmt = {
 
 def populate_kws(root, kws):
     for child in root.children:
-        try:
-            kw = child.keywords['Dataset']
-            kws[kw] = groups_abbrev[root.keywords['Group']]
-        except:
-            pass
+        if child.type == 'dataset':
+            # Only include datasets of kpoints, gspace, symmetry, and crystal
+            if child.parent.name in groups_abbrev.keys():
+                kws[child.name] = groups_abbrev[child.parent.name]
         populate_kws(child, kws)
 
 
@@ -48,21 +47,21 @@ def _create_io_cmd(fname_spec, group_name, io):
     group = mf_header.get_child(group_name)
 
     kws = {}
-    populate_kws(root, kws)
+    populate_kws(mf_header, kws)
 
     lines = []
     for child in group.children:
-        if child.get_type() == 'dataset':
-            name = child.keywords['Dataset']
-            dtype = child.keywords['Type']
+        if child.type == 'dataset':
+            name = child.name
+            dtype = child.dtype
             dt_hdf5 = types_to_hdf5[dtype]
             path = '/'.join(child.get_full_path())
-            rank = int(child.keywords['Rank'])
+            rank = child.rank
 
             fixed_size = True
             dims = []
             for idim in range(rank):
-                dim = child.keywords[f'Dims({idim+1})']
+                dim = child.dims[idim]
                 if not dim.isdecimal():
                     fixed_size = False
                     dim = f'{kws[dim]}->{dim}'
@@ -120,25 +119,20 @@ def create_print_cmd(fname_spec):
     lines = []
     for node in mf_header:
         lvl = node.level
-        ntype = node.get_type()
-        if ntype=='group':
-            name = node.keywords['Group']
-            group = node
-            group_name = name
-            if group_name == 'mf_header':
-                continue
+        name = node.name
+        if node.type == 'group':
             lines.append(f'\tprintf("\\n");')
             lines.append(f'\tprintf("- Group {name}:\\n");')
-        elif ntype=='dataset':
-            if group_name == 'mf_header':
+        elif node.type == 'dataset':
+            pname = node.parent.name
+            if pname == 'mf_header':
                 continue
-            name = node.keywords['Dataset']
-            dtype = node.keywords['Type']
+            dtype = node.dtype
             dt_header = types_to_bgw[dtype]
             dt_fmt = types_to_fmt[dtype]
-            lines.append(f'\tprintf("  - {name} (%d): ", sizeof(mf->{group_name}.{name})/sizeof({dt_header}));')
-            if int(node.keywords['Rank']) == 0:
-                lines.append(f'\tprintf("{dt_fmt}\\n", mf->{group_name}.{name});')
+            lines.append(f'\tprintf("  - {name} (%d): ", sizeof(mf->{pname}.{name})/sizeof({dt_header}));')
+            if node.rank == 0:
+                lines.append(f'\tprintf("{dt_fmt}\\n", mf->{pname}.{name});')
             else:
                 lines.append(f'\tprintf("...\\n");')
     lines.append(f'\tprintf("\\n");')

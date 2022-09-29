@@ -1,5 +1,5 @@
 /* -*- indent-tabs-mode: t -*- */
-<%from bgw_h5_spec_to_c import create_write_cmd, create_read_cmd, create_print_cmd%>
+<%from wfn_spec_to_c import create_write_cmd, create_read_cmd, create_print_cmd%>
 
 #include <complex.h>
 #include <stdio.h>
