@@ -9,10 +9,10 @@ LDFLAGS = -L$(TACC_HDF5_LIB) -lhdf5 -lhdf5_hl -ggdb3 -Wall -fvisibility=default 
 CFLAGS = -fPIC -I$(TACC_HDF5_INC) -ggdb3 -Wall -fvisibility=default -fstack-protector-all -fstack-check
 
 all: lib test
-lib: bgw_wfn_io.so
+lib: libbgw_wfn_io.so
 test: test_bindings.x
 
-bgw_wfn_io.so: bgw_wfn_io.o
+libbgw_wfn_io.so: bgw_wfn_io.o
 	$(CC) -shared -o $@ $^ $(LDFLAGS)
 
 test_bindings.x: test_bindings.o bgw_wfn_io.o

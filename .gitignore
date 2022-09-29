@@ -3,4 +3,5 @@
 *.x
 *.pyc
 __pycache__
+build
 WFN_out.h5
