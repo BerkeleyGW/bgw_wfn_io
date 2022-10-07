@@ -3,6 +3,6 @@
 *.x
 *.pyc
 __pycache__
-build
+build*
 WFN_out.h5
 WFN_out_py.h5

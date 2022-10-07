@@ -8,15 +8,28 @@ project (
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED True)
 
+# Only do these if this is the main project, and not if it is included through add_subdirectory
+if(CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME)
+  # Let's nicely support folders in IDEs
+  set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+  # Testing only available if this is the main app
+  # Note this needs to be done in the main CMakeLists
+  # since it calls enable_testing, which must be in the
+  # main CMakeLists.
+  include(CTest)
+endif()
+
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 find_package(HDF5 REQUIRED COMPONENTS C HL)
 
-add_library (bgw_wfn_io bgw_wfn_io.c bgw_wfn_io.h)
+# The compiled library code is here
+add_subdirectory(src)
 
-target_include_directories (bgw_wfn_io PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})
-
-add_executable (test_bindings.x test_bindings.c bgw_wfn_io.c bgw_wfn_io.h)
-
-#target_link_libraries (test_bindings.x LINK_PUBLIC bgw_wfn_io)
-target_link_libraries (test_bindings.x PRIVATE hdf5::hdf5_hl hdf5::hdf5)
+# Testing only available if this is the main app
+# Emergency override MODERN_CMAKE_BUILD_TESTING provided as well
+if((CMAKE_PROJECT_NAME STREQUAL PROJECT_NAME OR MODERN_CMAKE_BUILD_TESTING)
+   AND BUILD_TESTING)
+   add_subdirectory(tests)
+endif()

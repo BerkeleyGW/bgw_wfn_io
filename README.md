@@ -12,12 +12,13 @@ Makefile template.
 ### Using CMake
 Follow these steps:
 ```
-mkdir build
-cd build
+mkdir build && cd build
 cmake ../
 make
+make test
 ```
-You may need to manually specify the compiler with the `CC` flag.
+You may need to manually specify the compiler with the `CC` flag, e.g.,
+`CC=mpicc cmake ../`.
 
 ### Manually editting the sample `Makefile`
 Manually edit the `Makefile` and make the project. A library `libbgw_wfn_io.so`
@@ -37,3 +38,7 @@ will be created.
 * Implement parallel I/O for wavefunction coefficients (check distrib. w/ Alfredo).
 * Add optional flag in the WFN file when the wavefunction is stored in the full
   FFT grid. Can optimize BGW for that case (e.g., Umklapp vectors -> cycle shift).
+
+
+## Developers
+* Used CMake structure from: https://gitlab.com/CLIUtils/modern-cmake/-/tree/master/examples/extended-project.

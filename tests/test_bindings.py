@@ -4,8 +4,9 @@ from bgw_wfn import MF_HEADER, i32_t, f64_t
 from ctypes import cdll, byref
 
 
-def main(fname_in):
-    lib = cdll.LoadLibrary('./libbgw_wfn_io.so')
+def main(fname_in, fname_lib):
+    lib = cdll.LoadLibrary(fname_lib)
+
     mf = MF_HEADER()
 
     print('Reading input wavefunction WFN_in.h5')
@@ -37,4 +38,8 @@ def main(fname_in):
 
 
 if __name__ == "__main__":
-    main('WFN_in.h5')
+    #fname = 'libbgw_wfn_io.so'
+    import sys
+    fname_lib = sys.argv[1]
+
+    main('WFN_in.h5', fname_lib)
